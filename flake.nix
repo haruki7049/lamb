@@ -43,37 +43,15 @@
           overlays = [ inputs.rust-overlay.overlays.default ];
           src = lib.cleanSource ./.;
 
-          buildInputs =
-            lib.optionals pkgs.stdenv.isLinux [
-              pkgs.pkg-config
-              pkgs.udev
-              pkgs.alsa-lib
-              pkgs.vulkan-loader
-              pkgs.libX11
-              pkgs.libXcursor
-              pkgs.libXi
-              pkgs.libXrandr
-              pkgs.libxkbcommon
-              pkgs.wayland
-            ]
-            ++ [
-              pkgs.llvmPackages.libclang.lib
-            ];
+          buildInputs = [ ];
           nativeBuildInputs = [
-            pkgs.pkg-config # pkg-config
-            pkgs.makeWrapper # For the Nix packaging
             pkgs.nil # Nix LSP
             rust # Rust toolchain
-            pkgs.nushell # Script runner
-            pkgs.cachix # cachix CLI
           ];
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;
-
-            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
-            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
           };
-          spacerobo = craneLib.buildPackage {
+          lamb = craneLib.buildPackage {
             inherit
               src
               cargoArtifacts
@@ -83,24 +61,9 @@
             strictDeps = true;
             doCheck = true;
 
-            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
-            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
-
-            installPhaseCommand = ''
-              echo "actually installing contents of $postBuildInstallFromCargoBuildLogOut to $out"
-              mkdir -p $out
-              find "$postBuildInstallFromCargoBuildLogOut" -mindepth 1 -maxdepth 1 | xargs -r mv -t $out
-
-              echo "Copy assets"
-              cp -r crates/client/assets $out/bin
-
-              wrapProgram $out/bin/spr \
-                --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
-            '';
-
             meta = {
               licenses = [ lib.licenses.mit ];
-              mainProgram = "spr";
+              mainProgram = "lamb";
             };
           };
           cargo-clippy = craneLib.cargoClippy {
@@ -110,10 +73,8 @@
               buildInputs
               nativeBuildInputs
               ;
-            cargoClippyExtraArgs = "--verbose -- --deny warnings";
 
-            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
-            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            cargoClippyExtraArgs = "--verbose -- --deny warnings";
           };
           cargo-doc = craneLib.cargoDoc {
             inherit
@@ -122,9 +83,6 @@
               buildInputs
               nativeBuildInputs
               ;
-
-            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
-            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
           };
         in
         {
@@ -133,7 +91,7 @@
           };
 
           treefmt = {
-            projectRootFile = "flake.nix";
+            projectRootFile = ".git/config";
 
             # Nix
             programs.nixfmt.enable = true;
@@ -157,8 +115,8 @@
           };
 
           packages = {
-            inherit spacerobo;
-            default = spacerobo;
+            inherit lamb;
+            default = lamb;
             doc = cargo-doc;
           };
 
@@ -168,9 +126,6 @@
 
           devShells.default = pkgs.mkShell {
             inherit buildInputs nativeBuildInputs;
-
-            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
-            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
             shellHook = ''
               export PS1="\n[nix-shell:\w]$ "
