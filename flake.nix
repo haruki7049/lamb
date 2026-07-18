@@ -32,76 +32,29 @@
 
       perSystem =
         {
-          pkgs,
           lib,
-          system,
+          pkgs,
           ...
         }:
         let
-          rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-          craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
-          overlays = [ inputs.rust-overlay.overlays.default ];
-          src = lib.cleanSource ./.;
-
-          buildInputs = [ ];
           nativeBuildInputs = [
             pkgs.nil # Nix LSP
-            rust # Rust toolchain
+            pkgs.haskellPackages.cabal-install # Cabal build tool for Haskell
+            pkgs.haskellPackages.haskell-language-server # Haskell LSP
           ];
-          cargoArtifacts = craneLib.buildDepsOnly {
-            inherit src buildInputs nativeBuildInputs;
-          };
-          lamb = craneLib.buildPackage {
-            inherit
-              src
-              cargoArtifacts
-              buildInputs
-              nativeBuildInputs
-              ;
-            strictDeps = true;
-            doCheck = true;
 
-            meta = {
-              licenses = [ lib.licenses.mit ];
-              mainProgram = "lamb";
-            };
-          };
-          cargo-clippy = craneLib.cargoClippy {
-            inherit
-              src
-              cargoArtifacts
-              buildInputs
-              nativeBuildInputs
-              ;
-
-            cargoClippyExtraArgs = "--verbose -- --deny warnings";
-          };
-          cargo-doc = craneLib.cargoDoc {
-            inherit
-              src
-              cargoArtifacts
-              buildInputs
-              nativeBuildInputs
-              ;
-          };
+          buildInputs = [ ];
         in
         {
-          _module.args.pkgs = import inputs.nixpkgs {
-            inherit system overlays;
-          };
-
           treefmt = {
             projectRootFile = ".git/config";
 
             # Nix
             programs.nixfmt.enable = true;
 
-            # Rust
-            programs.rustfmt.enable = true;
-            settings.formatter.rustfmt.command = "${rust}/bin/rustfmt";
-
-            # TOML
-            programs.taplo.enable = true;
+            # Haskell
+            programs.ormolu.enable = true;
+            programs.cabal-gild.enable = true;
 
             # GitHub Actions
             programs.actionlint.enable = true;
@@ -114,22 +67,12 @@
             programs.shfmt.enable = true;
           };
 
-          packages = {
-            inherit lamb;
-            default = lamb;
-            doc = cargo-doc;
-          };
+          devShells.default = pkgs.haskellPackages.shellFor {
+            packages = hpkgs: [
+              (hpkgs.callCabal2nix "lamb" ./. { })
+            ];
 
-          checks = {
-            inherit cargo-clippy;
-          };
-
-          devShells.default = pkgs.mkShell {
             inherit buildInputs nativeBuildInputs;
-
-            shellHook = ''
-              export PS1="\n[nix-shell:\w]$ "
-            '';
           };
         };
     };

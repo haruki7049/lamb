@@ -1,0 +1,30 @@
+cabal-version: 3.0
+name: lamb
+version: 0.1.0.0
+license: MIT
+license-file: LICENSE
+author: haruki7049
+maintainer: tontonkirikiri@gmail.com
+build-type: Simple
+
+common warnings
+  ghc-options: -Wall
+
+library
+  import: warnings
+  exposed-modules: Lamb
+  build-depends:
+    base,
+
+  hs-source-dirs: lib
+  default-language: GHC2024
+
+executable soba
+  import: warnings
+  main-is: Main.hs
+  build-depends:
+    base,
+    lamb,
+
+  hs-source-dirs: app
+  default-language: GHC2024
