@@ -70,6 +70,7 @@
           devShells.default = pkgs.haskellPackages.shellFor {
             packages = hpkgs: [
               (hpkgs.callCabal2nix "lamb" ./. { })
+              (hpkgs.callCabal2nix "lamb-parser" ./packages/lamb-parser { })
             ];
 
             inherit buildInputs nativeBuildInputs;

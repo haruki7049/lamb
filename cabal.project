@@ -1,0 +1,4 @@
+tests: True
+packages:
+  ./lamb.cabal
+  ./packages/lamb-parser/lamb-parser.cabal

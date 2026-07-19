@@ -1,8 +1,7 @@
 cabal-version: 3.0
-name: lamb
+name: lamb-parser
 version: 0.1.0.0
 license: MIT
-license-file: LICENSE
 author: haruki7049
 maintainer: tontonkirikiri@gmail.com
 build-type: Simple
@@ -12,19 +11,24 @@ common warnings
 
 library
   import: warnings
-  exposed-modules: Lamb
+  exposed-modules:
+    LambParser
+    LambParser.Atoms
+
   build-depends:
     base
 
   hs-source-dirs: lib
   default-language: GHC2024
 
-executable soba
+test-suite test-lamb-parser
   import: warnings
-  main-is: Main.hs
+  type: exitcode-stdio-1.0
+  other-modules: LambParserSpec, LambParser.AtomSpec
   build-depends:
+    lamb-parser,
     base,
-    lamb,
+    hspec,
 
-  hs-source-dirs: app
-  default-language: GHC2024
+  main-is: Spec.hs
+  hs-source-dirs: tests
