@@ -1,7 +1,7 @@
-module LambParser.Atoms (Atom (AtomInteger, AtomFloat)) where
+module LambParser.Atoms (Atom (AtomInteger, AtomFloat, AtomString)) where
 
 data Atom a where
-  -- AtomString :: String -> Atom String
+  AtomString :: String -> Atom String
   AtomInteger :: Int -> Atom Integer
   AtomFloat :: Float -> Atom Float
 
