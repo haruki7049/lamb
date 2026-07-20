@@ -2,7 +2,7 @@ module LambParser.Atoms (Atom (AtomInteger, AtomFloat, AtomString)) where
 
 data Atom a where
   AtomString :: String -> Atom String
-  AtomInteger :: Int -> Atom Integer
+  AtomInteger :: Integer -> Atom Integer
   AtomFloat :: Float -> Atom Float
 
 deriving instance Show (Atom a)
