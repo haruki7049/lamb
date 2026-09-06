@@ -32,8 +32,9 @@
 
       perSystem =
         {
-          pkgs,
+          config,
           lib,
+          pkgs,
           system,
           ...
         }:
@@ -48,6 +49,8 @@
             pkgs.nil # Nix LSP
             rust # Rust toolchain
           ];
+          inputsFrom = [ config.treefmt.build.devShell ];
+
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;
           };
@@ -125,7 +128,7 @@
           };
 
           devShells.default = pkgs.mkShell {
-            inherit buildInputs nativeBuildInputs;
+            inherit buildInputs nativeBuildInputs inputsFrom;
 
             shellHook = ''
               export PS1="\n[nix-shell:\w]$ "
