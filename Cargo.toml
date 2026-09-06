@@ -15,4 +15,7 @@ publish = false
 name = "lamb"
 
 [dependencies]
-chumsky = { version = "0.13.0", default-features = false, features = ["std", "pratt"] }
+chumsky = { version = "0.13.0", default-features = false, features = [
+  "std",
+  "pratt",
+] }

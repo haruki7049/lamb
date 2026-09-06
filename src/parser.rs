@@ -12,8 +12,8 @@ use crate::lexer::{Span, Token};
 type Spanned<T> = ast::Spanned<T>;
 
 // Parses a single pattern, e.g. `_`, `x`, `0`, or `Node(x, xs)`.
-fn pattern_parser<'tokens, 'src: 'tokens, I>(
-) -> impl Parser<'tokens, I, Pattern, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
+fn pattern_parser<'tokens, 'src: 'tokens, I>()
+-> impl Parser<'tokens, I, Pattern, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
 where
     I: ValueInput<'tokens, Token = Token<'src>, Span = Span>,
 {
@@ -52,8 +52,8 @@ where
     })
 }
 
-pub fn expr_parser<'tokens, 'src: 'tokens, I>(
-) -> impl Parser<'tokens, I, Spanned<Expr>, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
+pub fn expr_parser<'tokens, 'src: 'tokens, I>()
+-> impl Parser<'tokens, I, Spanned<Expr>, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
 where
     I: ValueInput<'tokens, Token = Token<'src>, Span = Span>,
 {
@@ -154,8 +154,8 @@ where
     })
 }
 
-fn type_decl_parser<'tokens, 'src: 'tokens, I>(
-) -> impl Parser<'tokens, I, TypeDecl, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
+fn type_decl_parser<'tokens, 'src: 'tokens, I>()
+-> impl Parser<'tokens, I, TypeDecl, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
 where
     I: ValueInput<'tokens, Token = Token<'src>, Span = Span>,
 {
@@ -196,8 +196,8 @@ where
         })
 }
 
-fn fun_decl_parser<'tokens, 'src: 'tokens, I>(
-) -> impl Parser<'tokens, I, FunDecl, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
+fn fun_decl_parser<'tokens, 'src: 'tokens, I>()
+-> impl Parser<'tokens, I, FunDecl, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
 where
     I: ValueInput<'tokens, Token = Token<'src>, Span = Span>,
 {
@@ -221,8 +221,8 @@ where
         })
 }
 
-pub fn program_parser<'tokens, 'src: 'tokens, I>(
-) -> impl Parser<'tokens, I, Program, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
+pub fn program_parser<'tokens, 'src: 'tokens, I>()
+-> impl Parser<'tokens, I, Program, extra::Err<Rich<'tokens, Token<'src>, Span>>> + Clone
 where
     I: ValueInput<'tokens, Token = Token<'src>, Span = Span>,
 {

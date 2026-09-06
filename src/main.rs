@@ -1,5 +1,5 @@
-use chumsky::input::Input;
 use chumsky::Parser;
+use chumsky::input::Input;
 use std::{env, fs, process};
 
 mod ast;
